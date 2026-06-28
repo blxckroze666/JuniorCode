@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JuniorCode - Build Homepages</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #1a202c;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* HOME PAGE */
+        .home-page {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            text-align: center;
+        }
+
+        .home-page h1 {
+            font-size: 56px;
+            font-weight: 800;
+            margin-bottom: 16px;
+            color: white;
+            text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            letter-spacing: -2px;
+        }
+
+        .home-page p {
+            font-size: 18px;
+            color: rgba(255,255,255,0.9);
+            margin-bottom: 70px;
+            font-weight: 500;
+        }
+
+        .lesson-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+            width: 100%;
+            max-width: 1100px;
+        }
+
+        .lesson-card {
+            background: white;
+            border-radius: 12px;
+            padding: 40px 30px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+            border: 2px solid transparent;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .lesson-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .lesson-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 16px 48px rgba(0,0,0,0.2);
+            border-color: #667eea;
+        }
+
+        .lesson-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1a202c;
+            margin-bottom: 12px;
+        }
+
+        .lesson-desc {
+            font-size: 14px;
+            color: #57606f;
+            line-height: 1.5;
+        }
+
+        /* LESSON PAGE */
+        .lesson-page {
+            display: none;
+        }
+
+        .lesson-page.active {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            background: #f8f9fa;
+        }
+
+        .header {
+            background: white;
+            padding: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #667eea;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .header h1 {
+            font-size: 32px;
+            font-weight: 800;
+            color: #1a202c;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .back-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 700;
+            transition: all 0.2s;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        /* EXPLANATION */
+        .explanation-box {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            margin-left: 20px;
+            margin-right: 20px;
+        }
+
+        .explanation-box h3 {
+            font-size: 14px;
+            font-weight: 800;
+            color: #667eea;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .explanation-box p {
+            font-size: 14px;
+            color: #2c3e50;
+            line-height: 1.7;
+        }
+
+        /* MAIN CONTENT */
+        .content-wrapper {
+            display: flex;
+            gap: 20px;
+            flex: 1;
+            margin-bottom: 20px;
+            margin-left: 20px;
+            margin-right: 20px;
+        }
+
+        .editor-section, .preview-section {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            border: 1px solid #e0e6ed;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .editor-section {
+            flex: 1.2;
+        }
+
+        .preview-section {
+            flex: 1;
+        }
+
+        .section-title {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 14px 16px;
+            border-bottom: 1px solid #e0e6ed;
+            font-size: 12px;
+            font-weight: 800;
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* CODE EDITOR */
+        .editor-content {
+            flex: 1;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        textarea {
+            flex: 1;
+            padding: 18px;
+            border: none;
+            font-family: 'SF Mono', 'Monaco', 'Cascadia Code', monospace;
+            font-size: 13px;
+            resize: none;
+            color: #1a202c;
+            line-height: 1.8;
+            background: white;
+        }
+
+        textarea:focus {
+            outline: none;
+            background: #f8f9ff;
+        }
+
+        /* PREVIEW */
+        .preview-content {
+            flex: 1;
+            padding: 20px;
+            overflow: auto;
+            background: white;
+        }
+
+        .preview-frame {
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 6px;
+            background: white;
+        }
+
+        /* HELPER PANEL */
+        .helper-panel {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            border: 1px solid #e0e6ed;
+            margin: 0 20px 20px 20px;
+        }
+
+        .panel-title {
+            font-size: 12px;
+            font-weight: 800;
+            color: #667eea;
+            margin-bottom: 16px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .code-snippet {
+            background: #f8f9fa;
+            border: 1px solid #e0e6ed;
+            border-radius: 8px;
+            padding: 14px;
+            font-family: 'SF Mono', monospace;
+            font-size: 12px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: #2c3e50;
+            line-height: 1.5;
+        }
+
+        .code-snippet:hover {
+            background: #f0f4f8;
+            border-color: #667eea;
+            transform: translateX(4px);
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.15);
+        }
+
+        .code-snippet:last-child {
+            margin-bottom: 0;
+        }
+
+        /* BUTTONS */
+        .button-group {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-bottom: 20px;
+            margin-left: 20px;
+            margin-right: 20px;
+        }
+
+        .big-btn {
+            padding: 14px 32px;
+            font-size: 14px;
+            font-weight: 700;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .run-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .run-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .reset-btn {
+            background: #cbd5e0;
+            color: #1a202c;
+        }
+
+        .reset-btn:hover {
+            background: #a0aec0;
+        }
+
+        /* CHAT */
+        .chat-sidebar {
+            position: fixed;
+            right: -400px;
+            top: 0;
+            width: 400px;
+            height: 100vh;
+            background: white;
+            border-left: 1px solid #e0e6ed;
+            display: flex;
+            flex-direction: column;
+            transition: right 0.3s;
+            z-index: 999;
+            box-shadow: -4px 0 16px rgba(0,0,0,0.12);
+        }
+
+        .chat-sidebar.open {
+            right: 0;
+        }
+
+        .chat-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 700;
+            font-size: 15px;
+        }
+
+        .chat-close {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 20px;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .message {
+            padding: 12px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .message.user {
+            background: #667eea;
+            color: white;
+            margin-left: 30px;
+            text-align: right;
+        }
+
+        .message.bot {
+            background: #f0f4f8;
+            color: #2c3e50;
+            margin-right: 30px;
+        }
+
+        .chat-input {
+            padding: 14px;
+            border-top: 1px solid #e0e6ed;
+            display: flex;
+            gap: 10px;
+        }
+
+        .chat-input input {
+            flex: 1;
+            padding: 10px 14px;
+            border: 1px solid #cbd5e0;
+            border-radius: 6px;
+            font-size: 13px;
+        }
+
+        .chat-input input:focus {
+            outline: none;
+            border-color: #667eea;
+            background: #f8f9ff;
+        }
+
+        .chat-input button {
+            padding: 10px 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .chat-toggle {
+            position: fixed;
+            right: 24px;
+            bottom: 24px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 998;
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+            transition: all 0.2s;
+            font-weight: 700;
+        }
+
+        .chat-toggle:hover {
+            transform: scale(1.12);
+        }
+
+        @media (max-width: 1024px) {
+            .content-wrapper {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 16px;
+            }
+
+            .lesson-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- HOME PAGE -->
+    <div id="homePage" class="home-page">
+        <h1>JuniorCode</h1>
+        <p>Build real homepages with HTML and CSS</p>
+        
+        <div class="lesson-grid">
+            <div class="lesson-card" onclick="startLesson(0)">
+                <div class="lesson-title">HTML Basics</div>
+                <div class="lesson-desc">Create page structure and learn how web pages work</div>
+            </div>
+            
+            <div class="lesson-card" onclick="startLesson(1)">
+                <div class="lesson-title">Headings & Text</div>
+                <div class="lesson-desc">Add content and organize information on your page</div>
+            </div>
+            
+            <div class="lesson-card" onclick="startLesson(2)">
+                <div class="lesson-title">Colors & Styling</div>
+                <div class="lesson-desc">Make your pages look amazing with CSS styles</div>
+            </div>
+            
+            <div class="lesson-card" onclick="startLesson(3)">
+                <div class="lesson-title">Layouts</div>
+                <div class="lesson-desc">Arrange content like professional web designers</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- LESSON PAGE -->
+    <div id="lessonPage" class="lesson-page">
+        <div class="container">
+            <div class="header">
+                <h1 id="lessonTitle">HTML Basics</h1>
+                <button class="back-btn" onclick="goHome()">Back to Home</button>
+            </div>
+
+            <!-- EXPLANATION -->
+            <div class="explanation-box">
+                <h3>What You'll Learn</h3>
+                <p id="lessonExplanation">Learn how to build web pages with HTML and CSS</p>
+            </div>
+
+            <!-- HELPER -->
+            <div class="helper-panel">
+                <div class="panel-title">Code Templates - Click to Use</div>
+                <div id="snippetsList"></div>
+            </div>
+
+            <!-- MAIN CONTENT -->
+            <div class="content-wrapper">
+                <!-- EDITOR -->
+                <div class="editor-section">
+                    <div class="section-title">Code Editor</div>
+                    <div class="editor-content">
+                        <textarea id="codeEditor" placeholder="Write your HTML and CSS here..."></textarea>
+                    </div>
+                </div>
+
+                <!-- PREVIEW -->
+                <div class="preview-section">
+                    <div class="section-title">Live Preview</div>
+                    <div class="preview-content">
+                        <iframe id="preview" class="preview-frame" srcdoc=""></iframe>
+                    </div>
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button class="big-btn run-btn" onclick="updatePreview()">Update Preview</button>
+                <button class="big-btn reset-btn" onclick="resetLesson()">Reset Code</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CHAT -->
+    <div class="chat-sidebar" id="chatSidebar">
+        <div class="chat-header">
+            <span>Code Coach</span>
+            <button class="chat-close" onclick="toggleChat()">✕</button>
+        </div>
+        <div class="chat-messages" id="chatMessages"></div>
+        <div class="chat-input">
+            <input type="text" id="chatInput" placeholder="Ask for help..." onkeypress="handleChatKeyPress(event)">
+            <button onclick="sendChat()">Ask</button>
+        </div>
+    </div>
+
+    <button class="chat-toggle" onclick="toggleChat()">?</button>
+
+    <script>
+        const lessons = [
+            {
+                title: "HTML Basics",
+                explanation: "HTML is the foundation of every web page. It uses tags to structure content. Every HTML page needs <html>, <head>, and <body> tags. Tags work in pairs: opening tags like <div> and closing tags like </div>. The content goes between them.",
+                snippets: [
+                    { label: "Complete HTML Page Template", code: "<!DOCTYPE html>\n<html>\n<head>\n  <title>My Awesome Page</title>\n</head>\n<body>\n  <h1>Welcome to My Site</h1>\n  <p>This is my first webpage!</p>\n</body>\n</html>" },
+                    { label: "Add a Paragraph", code: "<p>This is a paragraph of text on my webpage.</p>" },
+                    { label: "Create Headings", code: "<h1>Main Title</h1>\n<h2>Subtitle</h2>\n<h3>Small Heading</h3>" },
+                    { label: "Add a Link", code: "<a href=\"https://example.com\">Click here to visit</a>" }
+                ]
+            },
+            {
+                title: "Headings & Text",
+                explanation: "Use headings to organize your content. h1 is the largest and most important, h2 is smaller, h3 is even smaller. Use paragraphs with <p> for regular text. You can make text bold with <strong> or italic with <em>. Lists help organize information.",
+                snippets: [
+                    { label: "All Heading Sizes", code: "<h1>This is h1 - Main Title</h1>\n<h2>This is h2 - Subtitle</h2>\n<h3>This is h3 - Section</h3>" },
+                    { label: "Bold and Italic Text", code: "<p>This is <strong>bold text</strong> and this is <em>italic text</em></p>" },
+                    { label: "Bullet Point List", code: "<ul>\n  <li>First item</li>\n  <li>Second item</li>\n  <li>Third item</li>\n</ul>" },
+                    { label: "Complete Example", code: "<h1>My Interests</h1>\n<p>Here are things I enjoy:</p>\n<ul>\n  <li>Building websites</li>\n  <li>Learning to code</li>\n  <li>Creating designs</li>\n</ul>" }
+                ]
+            },
+            {
+                title: "Colors & Styling",
+                explanation: "CSS adds style and appearance to your HTML. Put your CSS in a <style> tag inside the <head>. Use color names like 'red', 'blue', or hex codes like '#FF5733'. You can change background colors, text colors, font sizes, and more with CSS properties.",
+                snippets: [
+                    { label: "Colored Background", code: "<style>\n  body {\n    background-color: lightblue;\n  }\n</style>\n\n<h1>Hello</h1>" },
+                    { label: "Style Headings", code: "<style>\n  h1 {\n    color: #667eea;\n    font-size: 48px;\n    text-align: center;\n  }\n</style>\n\n<h1>Big Purple Title</h1>" },
+                    { label: "Style Text and Paragraphs", code: "<style>\n  body { font-family: Arial; }\n  p { color: #333; font-size: 16px; }\n</style>\n\n<p>Styled paragraph text</p>" },
+                    { label: "Complete Styled Page", code: "<!DOCTYPE html>\n<html>\n<head>\n  <style>\n    body { background-color: #f0f0f0; font-family: Arial; }\n    h1 { color: #667eea; text-align: center; }\n    p { color: #333; line-height: 1.6; }\n  </style>\n</head>\n<body>\n  <h1>Welcome</h1>\n  <p>This page has professional styling!</p>\n</body>\n</html>" }
+                ]
+            },
+            {
+                title: "Layouts",
+                explanation: "Use divs as containers to organize your page layout. CSS flexbox and grid help arrange divs side by side or in grids. Control spacing with padding (inside), margin (outside), and width to create professional layouts like two-column designs or card layouts.",
+                snippets: [
+                    { label: "Two Column Layout", code: "<style>\n  .container { display: flex; }\n  .column { flex: 1; padding: 20px; border: 1px solid #ddd; }\n</style>\n\n<div class=\"container\">\n  <div class=\"column\">Left Column</div>\n  <div class=\"column\">Right Column</div>\n</div>" },
+                    { label: "Centered Content Box", code: "<style>\n  .box { width: 400px; padding: 30px; margin: 0 auto; background: #f0f4f8; }\n</style>\n\n<div class=\"box\">\n  <h1>Centered Box</h1>\n  <p>Content goes here</p>\n</div>" },
+                    { label: "Card Design", code: "<style>\n  .card { width: 280px; padding: 24px; border: 1px solid #ddd; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }\n</style>\n\n<div class=\"card\">\n  <h2>Card Title</h2>\n  <p>Card description text goes here</p>\n</div>" },
+                    { label: "Three Column Layout", code: "<style>\n  .row { display: flex; gap: 20px; }\n  .col { flex: 1; padding: 20px; background: #f8f9fa; }\n</style>\n\n<div class=\"row\">\n  <div class=\"col\">Column 1</div>\n  <div class=\"col\">Column 2</div>\n  <div class=\"col\">Column 3</div>\n</div>" }
+                ]
+            }
+        ];
+
+        let currentLesson = 0;
+
+        function startLesson(index) {
+            currentLesson = index;
+            document.getElementById('homePage').style.display = 'none';
+            document.getElementById('lessonPage').classList.add('active');
+            renderLesson();
+            initChat();
+        }
+
+        function goHome() {
+            document.getElementById('homePage').style.display = 'flex';
+            document.getElementById('lessonPage').classList.remove('active');
+            document.getElementById('codeEditor').value = '';
+            document.getElementById('preview').srcdoc = '';
+            document.getElementById('chatSidebar').classList.remove('open');
+        }
+
+        function renderLesson() {
+            const lesson = lessons[currentLesson];
+            document.getElementById('lessonTitle').textContent = lesson.title;
+            document.getElementById('lessonExplanation').textContent = lesson.explanation;
+            
+            const snippets = document.getElementById('snippetsList');
+            snippets.innerHTML = '';
+            
+            lesson.snippets.forEach((snippet) => {
+                const div = document.createElement('div');
+                div.className = 'code-snippet';
+                div.textContent = snippet.label;
+                div.onclick = () => {
+                    document.getElementById('codeEditor').value = snippet.code;
+                    document.getElementById('codeEditor').focus();
+                };
+                snippets.appendChild(div);
+            });
+        }
+
+        function updatePreview() {
+            const code = document.getElementById('codeEditor').value;
+            document.getElementById('preview').srcdoc = code;
+        }
+
+        function resetLesson() {
+            document.getElementById('codeEditor').value = '';
+            document.getElementById('preview').srcdoc = '';
+        }
+
+        // CHAT
+        const coachResponses = {
+            'html': 'HTML creates the structure of your page. Remember: every opening tag like <div> needs a closing tag like </div>. Put your content between them!',
+            'css': 'CSS makes things look good. Put it in <style> tags. Use selectors to pick what to style, then add properties like color, size, and spacing.',
+            'color': 'Use the color property for text color: h1 { color: red; }. Use background-color for background: body { background-color: lightblue; }',
+            'layout': 'Use display: flex to arrange things side by side. Add gap: 20px to create space between items.',
+            'error': 'Check that tags are spelled right and closed properly. Make sure your brackets { } and parentheses ( ) are in the right places.',
+            'help': 'Click on a template on the left! They show working code you can learn from. Try changing colors, text, or sizes to experiment!',
+        };
+
+        function initChat() {
+            document.getElementById('chatMessages').innerHTML = '';
+            addBotMessage('Hi! I\'m your Code Coach. Ask me anything about HTML, CSS, layouts, colors, or if something isn\'t working!');
+        }
+
+        function toggleChat() {
+            document.getElementById('chatSidebar').classList.toggle('open');
+        }
+
+        function sendChat() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            addUserMessage(message);
+            input.value = '';
+            
+            setTimeout(() => {
+                const response = getCoachResponse(message.toLowerCase());
+                addBotMessage(response);
+            }, 300);
+        }
+
+        function handleChatKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendChat();
+            }
+        }
+
+        function addUserMessage(text) {
+            const chat = document.getElementById('chatMessages');
+            const msg = document.createElement('div');
+            msg.className = 'message user';
+            msg.textContent = text;
+            chat.appendChild(msg);
+            chat.scrollTop = chat.scrollHeight;
+        }
+
+        function addBotMessage(text) {
+            const chat = document.getElementById('chatMessages');
+            const msg = document.createElement('div');
+            msg.className = 'message bot';
+            msg.textContent = text;
+            chat.appendChild(msg);
+            chat.scrollTop = chat.scrollHeight;
+        }
+
+        function getCoachResponse(input) {
+            for (let key in coachResponses) {
+                if (input.includes(key)) {
+                    return coachResponses[key];
+                }
+            }
+            return 'Good question! Click one of the code templates on the left to see examples. You can also ask me about HTML, CSS, colors, layouts, or errors!';
+        }
+
+        window.onload = renderLesson;
+    </script>
+</body>
+</html>
